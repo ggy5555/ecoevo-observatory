@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="환경 조건을 조절하며 자연선택과 속도-에너지 trade-off를 관찰하는 가상 진화생태학 실험실"
+    />
+    <meta name="theme-color" content="#0f5d52" />
+    <title>EcoEvo Observatory</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#simulation" aria-label="EcoEvo Observatory 홈">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span>
+          <strong>EcoEvo Observatory</strong>
+          <small>Evolutionary Ecology Virtual Lab</small>
+        </span>
+      </a>
+      <div class="run-status" id="runStatus" data-state="ready">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="runStatusText">실험 준비됨</span>
+      </div>
+    </header>
+
+    <main id="simulation" class="workspace">
+      <section class="intro" aria-labelledby="pageTitle">
+        <div>
+          <p class="eyebrow">OBSERVATION MODE · MVP 0.1</p>
+          <h1 id="pageTitle">환경을 바꾸고, 진화를 관찰하세요.</h1>
+          <p>
+            서로 다른 <i>speedGene</i>을 가진 가상 생물들이 먹이를 찾고 에너지를 쓰며
+            번식합니다. 결과는 정해져 있지 않고 개체의 행동에서 나타납니다.
+          </p>
+        </div>
+        <div class="legend" aria-label="캔버스 범례">
+          <span><i class="legend-prey"></i>가상 생물</span>
+          <span><i class="legend-food"></i>먹이</span>
+          <span><i class="legend-trail"></i>이동 방향</span>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="실시간 통계">
+        <article class="stat-card primary-stat">
+          <span>Simulation tick</span>
+          <strong id="statTick">0</strong>
+          <small>고정 시간 단위</small>
+        </article>
+        <article class="stat-card">
+          <span>Population</span>
+          <strong id="statPopulation">30</strong>
+          <small>살아 있는 개체</small>
+        </article>
+        <article class="stat-card">
+          <span>Mean speedGene</span>
+          <strong id="statMeanGene">0.000</strong>
+          <small>0.000–1.000</small>
+        </article>
+        <article class="stat-card">
+          <span>Current food</span>
+          <strong id="statFood">50</strong>
+          <small>최대 80개</small>
+        </article>
+        <article class="stat-card births">
+          <span>Births</span>
+          <strong id="statBirths">0</strong>
+          <small>누적 출생</small>
+        </article>
+        <article class="stat-card deaths">
+          <span>Deaths</span>
+          <strong id="statDeaths">0</strong>
+          <small>누적 사망</small>
+        </article>
+      </section>
+
+      <section class="lab-grid">
+        <aside class="panel controls-panel" aria-labelledby="controlsTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-index">01</p>
+              <h2 id="controlsTitle">환경 설정</h2>
+            </div>
+            <span class="tag">CALIBRATION</span>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="foodSpawnRate">먹이 생성률</label>
+              <output id="foodSpawnOutput" for="foodSpawnRate">0.25 / tick</output>
+            </div>
+            <input
+              id="foodSpawnRate"
+              type="range"
+              min="0.15"
+              max="0.35"
+              step="0.05"
+              value="0.25"
+            />
+            <div class="range-labels" aria-hidden="true">
+              <span>낮음 0.15</span><span>높음 0.35</span>
+            </div>
+            <p class="help-text">
+              한 tick마다 새 먹이가 생성될 확률입니다. 다른 조건은 고정한 채 이 값만
+              바꾸어 비교하세요.
+            </p>
+          </div>
+
+          <div class="control-group compact">
+            <label for="speedSelect">관찰 속도</label>
+            <select id="speedSelect">
+              <option value="1">1× — 자세히 관찰</option>
+              <option value="5">5× — 변화 확인</option>
+              <option value="20">20× — 빠른 진행</option>
+            </select>
+          </div>
+
+          <div class="button-stack">
+            <button class="button button-primary" id="toggleButton" type="button">
+              <span class="button-icon" aria-hidden="true">▶</span>
+              <span id="toggleButtonText">시뮬레이션 시작</span>
+            </button>
+            <button class="button button-secondary" id="stepButton" type="button">
+              1 tick 실행
+            </button>
+            <button class="button button-quiet" id="resetButton" type="button">
+              초기 상태로 재설정
+            </button>
+          </div>
+
+          <div class="controlled-variables">
+            <p>고정된 조건</p>
+            <dl>
+              <div><dt>World</dt><dd>800 × 600</dd></div>
+              <div><dt>Initial agents</dt><dd>30</dd></div>
+              <div><dt>Initial food</dt><dd>50</dd></div>
+              <div><dt>Detection radius</dt><dd>100 px</dd></div>
+            </dl>
+          </div>
+        </aside>
+
+        <section class="panel canvas-panel" aria-labelledby="ecosystemTitle">
+          <div class="panel-heading canvas-heading">
+            <div>
+              <p class="panel-index">02</p>
+              <h2 id="ecosystemTitle">가상 생태계</h2>
+            </div>
+            <div class="canvas-meta">
+              <span>TOROIDAL WORLD</span>
+              <span>800 × 600</span>
+            </div>
+          </div>
+
+          <div class="canvas-shell">
+            <canvas
+              id="ecosystemCanvas"
+              width="800"
+              height="600"
+              aria-label="가상 생물과 먹이가 움직이는 진화생태학 시뮬레이션"
+            ></canvas>
+            <div class="canvas-overlay" id="canvasOverlay">
+              <p>가설을 세우고 실험을 시작하세요</p>
+              <strong>먹이 생성률이 달라지면 집단은 어떻게 변할까요?</strong>
+              <button id="overlayStartButton" type="button">Start simulation</button>
+            </div>
+            <div class="canvas-corner" aria-hidden="true">LIVE MODEL</div>
+          </div>
+          <p class="canvas-caption">
+            가장자리를 통과한 개체는 반대편으로 이어집니다. 색이 밝을수록
+            <i>speedGene</i> 값이 높습니다.
+          </p>
+        </section>
+
+        <aside class="panel model-panel" aria-labelledby="modelTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-index">03</p>
+              <h2 id="modelTitle">모델 기록</h2>
+            </div>
+            <span class="tag neutral">LIVE</span>
+          </div>
+
+          <div class="metric-list">
+            <div>
+              <span>평균 에너지</span>
+              <strong id="statMeanEnergy">50.0</strong>
+            </div>
+            <div>
+              <span>평균 최대속도</span>
+              <strong id="statMeanSpeed">0.00</strong>
+            </div>
+            <div>
+              <span>최고령 개체</span>
+              <strong id="statOldest">0</strong>
+            </div>
+            <div>
+              <span>먹이 섭취</span>
+              <strong id="statFoodEaten">0</strong>
+            </div>
+          </div>
+
+          <div class="process-card">
+            <p>선택이 나타나는 과정</p>
+            <ol>
+              <li><span>01</span>유전형질</li>
+              <li><span>02</span>이동 행동</li>
+              <li><span>03</span>에너지 손익</li>
+              <li><span>04</span>번식 성공</li>
+            </ol>
+          </div>
+
+          <div class="model-note">
+            <span>MODEL NOTE</span>
+            <p>
+              대사 비용과 이동 계수는 실제 생리학적 실측값이 아닌 무차원 스케일링
+              파라미터입니다.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="methods-panel" aria-labelledby="methodsTitle">
+        <div>
+          <p class="eyebrow">MODEL ASSUMPTIONS</p>
+          <h2 id="methodsTitle">이 시뮬레이션은 무엇을 계산하나요?</h2>
+        </div>
+        <div class="formula-grid">
+          <article>
+            <span>Genotype → Phenotype</span>
+            <strong>maxSpeed = 0.5 + speedGene × 2.5</strong>
+          </article>
+          <article>
+            <span>Movement cost</span>
+            <strong>cost = 0.1 + 0.05u²</strong>
+          </article>
+          <article>
+            <span>Reproduction</span>
+            <strong>energy ≥ 100 → parent + child</strong>
+          </article>
+          <article>
+            <span>Mutation</span>
+            <strong>μ = 0.05, σ = 0.03</strong>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>EcoEvo Observatory · MVP 0.1</span>
+      <span>Conceptual computational model — not a real ecosystem predictor</span>
+    </footer>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

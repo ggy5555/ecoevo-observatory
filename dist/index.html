@@ -22,9 +22,15 @@
           <small>Evolutionary Ecology Virtual Lab</small>
         </span>
       </a>
-      <div class="run-status" id="runStatus" data-state="ready">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span id="runStatusText">실험 준비됨</span>
+      <div class="topbar-actions">
+        <button class="tutorial-replay" id="tutorialReplay" type="button">
+          <span aria-hidden="true">?</span>
+          튜토리얼 다시 보기
+        </button>
+        <div class="run-status" id="runStatus" data-state="ready">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="runStatusText">실험 준비됨</span>
+        </div>
       </div>
     </header>
 
@@ -253,6 +259,36 @@
       <span>EcoEvo Observatory · MVP 0.1</span>
       <span>Conceptual computational model — not a real ecosystem predictor</span>
     </footer>
+
+    <div class="tutorial-layer" id="tutorialLayer" hidden aria-hidden="true">
+      <div class="tutorial-backdrop" aria-hidden="true"></div>
+      <section
+        class="tutorial-card"
+        id="tutorialCard"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tutorialTitle"
+        aria-describedby="tutorialDescription"
+      >
+        <div class="tutorial-card-head">
+          <span class="tutorial-step" id="tutorialStep">STEP 1 / 9</span>
+          <button class="tutorial-skip" id="tutorialSkip" type="button">건너뛰기</button>
+        </div>
+        <div class="tutorial-icon" id="tutorialIcon" aria-hidden="true">◎</div>
+        <h2 id="tutorialTitle">EcoEvo Observatory 사용법</h2>
+        <p id="tutorialDescription"></p>
+        <p class="tutorial-tip" id="tutorialTip"></p>
+        <div class="tutorial-progress" id="tutorialProgress" aria-hidden="true"></div>
+        <div class="tutorial-actions">
+          <button class="tutorial-button secondary" id="tutorialPrevious" type="button">
+            이전
+          </button>
+          <button class="tutorial-button primary" id="tutorialNext" type="button">
+            다음
+          </button>
+        </div>
+      </section>
+    </div>
 
     <script type="module" src="./js/main.js"></script>
   </body>

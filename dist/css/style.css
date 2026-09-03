@@ -158,6 +158,44 @@ input[type="range"] {
   background: var(--orange);
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.tutorial-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+  font-size: 0.73rem;
+  font-weight: 720;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.tutorial-replay span {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #dff1ec;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+}
+
+.tutorial-replay:hover {
+  border-color: #9abbb3;
+  background: #fff;
+  transform: translateY(-1px);
+}
+
 @keyframes pulse {
   50% {
     transform: scale(0.72);
@@ -771,6 +809,214 @@ footer {
   font-size: 0.67rem;
 }
 
+/* Guided first-run tutorial */
+.tutorial-layer[hidden] {
+  display: none;
+}
+
+.tutorial-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tutorial-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: auto;
+  background: rgba(3, 17, 15, 0.56);
+  backdrop-filter: blur(7px) saturate(0.72);
+  animation: tutorial-fade-in 260ms ease both;
+}
+
+.tutorial-focus {
+  position: relative !important;
+  z-index: 1010 !important;
+  pointer-events: none !important;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 4px rgba(166, 244, 221, 0.9),
+    0 0 0 9px rgba(15, 93, 82, 0.32),
+    0 18px 60px rgba(0, 0, 0, 0.26) !important;
+  animation: tutorial-focus-pulse 1.8s ease-in-out infinite;
+}
+
+.tutorial-card {
+  position: fixed;
+  z-index: 1020;
+  width: min(370px, calc(100vw - 32px));
+  padding: 20px;
+  pointer-events: auto;
+  border: 1px solid rgba(170, 213, 202, 0.88);
+  border-radius: 18px;
+  background: rgba(252, 255, 254, 0.98);
+  box-shadow: 0 24px 80px rgba(0, 19, 16, 0.3);
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.tutorial-card.ready {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.tutorial-card[data-placement="center"] {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-50% + 10px)) scale(0.985);
+}
+
+.tutorial-card[data-placement="center"].ready {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.tutorial-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tutorial-step {
+  color: var(--teal);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+
+.tutorial-skip {
+  padding: 5px 7px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 680;
+}
+
+.tutorial-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-top: 14px;
+  border: 1px solid #b8d7d0;
+  border-radius: 13px;
+  background: #e7f5f1;
+  color: var(--green);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.tutorial-card h2 {
+  margin: 13px 0 8px;
+  font-size: 1.24rem;
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+}
+
+.tutorial-card > p {
+  margin: 0;
+  color: #53625e;
+  font-size: 0.9rem;
+  line-height: 1.62;
+  word-break: keep-all;
+}
+
+.tutorial-card .tutorial-tip {
+  margin-top: 11px;
+  padding: 10px 11px;
+  border-left: 3px solid #52a997;
+  border-radius: 0 8px 8px 0;
+  background: #edf7f4;
+  color: #315a51;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.tutorial-tip:empty {
+  display: none;
+}
+
+.tutorial-progress {
+  display: flex;
+  gap: 5px;
+  margin-top: 17px;
+}
+
+.tutorial-progress span {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: #d5e1de;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.tutorial-progress span.active {
+  width: 24px;
+  background: var(--green);
+}
+
+.tutorial-actions {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.tutorial-button {
+  min-height: 44px;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 0.83rem;
+  font-weight: 760;
+}
+
+.tutorial-button.secondary {
+  border: 1px solid var(--line-strong);
+  background: #f5f8f7;
+  color: var(--ink);
+}
+
+.tutorial-button.primary {
+  border: 1px solid var(--green-dark);
+  background: var(--green);
+  color: #fff;
+}
+
+.tutorial-button.primary:hover {
+  background: var(--green-dark);
+}
+
+.tutorial-button:disabled {
+  visibility: hidden;
+}
+
+.tutorial-button:focus-visible,
+.tutorial-skip:focus-visible,
+.tutorial-replay:focus-visible {
+  outline: 3px solid rgba(43, 111, 243, 0.32);
+  outline-offset: 2px;
+}
+
+@keyframes tutorial-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tutorial-focus-pulse {
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(166, 244, 221, 1),
+      0 0 0 12px rgba(15, 93, 82, 0.18),
+      0 18px 60px rgba(0, 0, 0, 0.3);
+  }
+}
+
 @media (max-width: 1160px) {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -803,6 +1049,16 @@ footer {
 @media (max-width: 820px) {
   .topbar {
     height: 64px;
+  }
+
+  .tutorial-card:not([data-placement="center"]) {
+    left: 12px !important;
+    right: 12px;
+    bottom: 12px;
+    top: auto !important;
+    width: auto;
+    max-height: min(48vh, 390px);
+    overflow-y: auto;
   }
 
   .brand small {
@@ -870,6 +1126,29 @@ footer {
   .run-status {
     padding: 7px 9px;
     font-size: 0.68rem;
+  }
+
+  .tutorial-replay {
+    width: 36px;
+    padding: 7px;
+    justify-content: center;
+    overflow: hidden;
+    color: transparent;
+    white-space: nowrap;
+  }
+
+  .tutorial-replay span {
+    flex: 0 0 18px;
+    color: var(--green-dark);
+  }
+
+  .tutorial-card {
+    padding: 17px;
+    border-radius: 15px;
+  }
+
+  .tutorial-card h2 {
+    font-size: 1.1rem;
   }
 
   .intro h1 {

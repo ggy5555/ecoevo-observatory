@@ -99,6 +99,7 @@ const tutorialSteps = [
   },
   {
     target: ".stats-grid",
+    scrollBlock: "start",
     icon: "Σ",
     title: "핵심 결과 읽기",
     description:
@@ -222,11 +223,12 @@ function renderTutorialStep() {
     tutorialTarget = document.querySelector(step.target);
     if (tutorialTarget) {
       tutorialTarget.classList.add("tutorial-focus");
+      tutorialTarget.style.scrollMarginTop = step.scrollBlock === "start" ? "88px" : "";
       tutorialTarget.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? "auto"
           : "smooth",
-        block: "center",
+        block: step.scrollBlock || "center",
         inline: "center",
       });
     }

@@ -37,7 +37,7 @@
     <main id="simulation" class="workspace">
       <section class="intro" aria-labelledby="pageTitle">
         <div>
-          <p class="eyebrow">OBSERVATION MODE · MVP 0.1</p>
+          <p class="eyebrow">OBSERVATION MODE · MVP 0.2</p>
           <h1 id="pageTitle">환경을 바꾸고, 진화를 관찰하세요.</h1>
           <p>
             서로 다른 <i>speedGene</i>을 가진 가상 생물들이 먹이를 찾고 에너지를 쓰며
@@ -229,6 +229,122 @@
         </aside>
       </section>
 
+      <section class="analysis-panel" id="experimentAnalysis" aria-labelledby="analysisTitle">
+        <div class="analysis-heading">
+          <div>
+            <p class="panel-index">04</p>
+            <h2 id="analysisTitle">실험 기록 및 A/B 비교</h2>
+            <p>
+              한 조건의 변화를 기록해 A에 저장하고, 조건을 바꾼 다음 B에 저장해 비교하세요.
+            </p>
+          </div>
+          <div class="chart-key" aria-label="그래프 색상 범례">
+            <span><i class="key-a"></i>실험 A</span>
+            <span><i class="key-b"></i>실험 B</span>
+            <span><i class="key-live"></i>현재 기록</span>
+          </div>
+        </div>
+
+        <div class="analysis-layout">
+          <aside class="recorder-panel" aria-label="실험 기록 제어">
+            <div class="record-status" id="recordStatus" data-state="idle" aria-live="polite">
+              <span class="record-dot" aria-hidden="true"></span>
+              <div>
+                <strong id="recordStatusText">기록 대기</strong>
+                <small id="recordSampleCount">표본 0개</small>
+              </div>
+            </div>
+
+            <button class="button button-primary record-button" id="recordButton" type="button">
+              <span class="button-icon" aria-hidden="true">●</span>
+              <span id="recordButtonText">기록 시작</span>
+            </button>
+
+            <div class="save-buttons">
+              <button class="button slot-button slot-a" id="saveRunA" type="button" disabled>
+                현재 기록 → A 저장
+              </button>
+              <button class="button slot-button slot-b" id="saveRunB" type="button" disabled>
+                현재 기록 → B 저장
+              </button>
+            </div>
+
+            <div class="experiment-slots">
+              <article class="experiment-slot" id="slotACard" data-state="empty">
+                <span>EXPERIMENT A</span>
+                <strong id="slotAMeta">저장된 기록 없음</strong>
+                <small id="slotAStats">기록을 완료한 뒤 A에 저장하세요.</small>
+              </article>
+              <article class="experiment-slot" id="slotBCard" data-state="empty">
+                <span>EXPERIMENT B</span>
+                <strong id="slotBMeta">저장된 기록 없음</strong>
+                <small id="slotBStats">조건을 바꾸어 B와 비교하세요.</small>
+              </article>
+            </div>
+
+            <div class="record-actions">
+              <button class="button button-secondary" id="downloadCsv" type="button" disabled>
+                CSV 내려받기
+              </button>
+              <button class="button button-quiet" id="clearExperiments" type="button" disabled>
+                기록 모두 지우기
+              </button>
+            </div>
+          </aside>
+
+          <div class="chart-area">
+            <div class="chart-grid">
+              <figure class="chart-card">
+                <figcaption>
+                  <span>Population</span>
+                  <small>현재 개체 수</small>
+                </figcaption>
+                <canvas
+                  class="chart-canvas"
+                  id="populationChart"
+                  width="640"
+                  height="220"
+                  aria-label="시간에 따른 개체 수 변화 그래프"
+                ></canvas>
+              </figure>
+              <figure class="chart-card">
+                <figcaption>
+                  <span>Mean speedGene</span>
+                  <small>집단 평균 유전값</small>
+                </figcaption>
+                <canvas
+                  class="chart-canvas"
+                  id="geneChart"
+                  width="640"
+                  height="220"
+                  aria-label="시간에 따른 평균 speedGene 변화 그래프"
+                ></canvas>
+              </figure>
+              <figure class="chart-card chart-card-wide">
+                <figcaption>
+                  <span>Births / Deaths</span>
+                  <small>실선 출생 · 점선 사망</small>
+                </figcaption>
+                <canvas
+                  class="chart-canvas"
+                  id="vitalChart"
+                  width="1280"
+                  height="220"
+                  aria-label="시간에 따른 누적 출생과 사망 변화 그래프"
+                ></canvas>
+              </figure>
+            </div>
+
+            <article class="comparison-summary">
+              <span>COMPARISON NOTE</span>
+              <p id="comparisonSummary" aria-live="polite">
+                실험을 기록한 뒤 A와 B 슬롯에 저장하면 조건별 차이를 자동으로 정리합니다.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section class="methods-panel" aria-labelledby="methodsTitle">
         <div>
           <p class="eyebrow">MODEL ASSUMPTIONS</p>
@@ -256,7 +372,7 @@
     </main>
 
     <footer>
-      <span>EcoEvo Observatory · MVP 0.1</span>
+      <span>EcoEvo Observatory · MVP 0.2</span>
       <span>Conceptual computational model — not a real ecosystem predictor</span>
     </footer>
 
@@ -271,7 +387,7 @@
         aria-describedby="tutorialDescription"
       >
         <div class="tutorial-card-head">
-          <span class="tutorial-step" id="tutorialStep">STEP 1 / 9</span>
+          <span class="tutorial-step" id="tutorialStep">STEP 1 / 10</span>
           <button class="tutorial-skip" id="tutorialSkip" type="button">건너뛰기</button>
         </div>
         <div class="tutorial-icon" id="tutorialIcon" aria-hidden="true">◎</div>

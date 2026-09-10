@@ -2,7 +2,9 @@
 
 환경 조건을 조절하고 가상 생물 집단의 생존·번식·사망을 관찰하는 웹 기반 진화생태학 Virtual Lab입니다.
 
-현재 버전은 개발 명세의 **MVP 0.1** 범위만 구현합니다. 결과를 직접 증가·감소시키는 코드는 없으며, `유전형질 → 표현형 → 행동 → 에너지 손익 → 번식 성공`의 과정에서 집단 변화가 나타납니다.
+현재 버전은 개발 명세의 **MVP 0.2** 범위를 구현합니다. 결과를 직접 증가·감소시키는 코드는 없으며, `유전형질 → 표현형 → 행동 → 에너지 손익 → 번식 성공`의 과정에서 집단 변화가 나타납니다.
+
+실험 기록 기능으로 Population, 평균 speedGene, 누적 Births·Deaths를 10 tick 간격으로 수집하고, 서로 다른 두 조건을 A/B 슬롯에 저장해 그래프와 자동 요약으로 비교할 수 있습니다. 저장한 측정값은 CSV로 내려받을 수 있습니다.
 
 ## 실행 방법
 
@@ -45,13 +47,16 @@ ecoevo-observatory/
 │  ├─ css/style.css
 │  └─ js/
 │     ├─ main.js
+│     ├─ experiment.js
 │     ├─ simulation.js
 │     ├─ agent.js
 │     ├─ food.js
 │     ├─ genetics.js
 │     ├─ statistics.js
 │     └─ utils.js
-├─ tests/simulation.test.mjs
+├─ tests/
+│  ├─ simulation.test.mjs
+│  └─ experiment.test.mjs
 ├─ .github/workflows/pages.yml
 ├─ package.json
 └─ README.md
@@ -69,4 +74,4 @@ npm test
 
 ## 다음 개발 단계
 
-MVP calibration을 먼저 진행한 뒤 포식자, 반복실험, same-seed 비교, 유전적 부동 실험을 별도 단계에서 추가합니다.
+반복실험과 same-seed 비교를 보강한 뒤 포식자, 환경 사건, 유전적 부동 실험을 별도 단계에서 추가합니다.

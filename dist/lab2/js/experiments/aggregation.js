@@ -24,7 +24,7 @@ export function aggregate(result) {
       return {tick,n:at.length,populationMean:mean(population),popLow:percentile(population,10),
         popHigh:percentile(population,90),geneMean:mean(genes),geneN:genes.length};
     });
-    return {condition,label:result.plan.experimentType==="predation"?String(condition):condition.toFixed(2),completeRuns:complete.length,
+    return {condition,experimentType:result.plan.experimentType,label:result.plan.experimentType==="predation"?String(condition):condition.toFixed(2),completeRuns:complete.length,
       excludedRuns:selected.length-complete.length,
       extinctCount:complete.filter(run=>run.summary.extinct).length,
       extinctionRate:complete.length?complete.filter(run=>run.summary.extinct).length/complete.length:null,

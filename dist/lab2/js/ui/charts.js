@@ -54,7 +54,7 @@ export function renderLineChart(canvas,groups,key,{maxY=null,yLabel="ticks",band
   });
   ctx.textAlign="left";ctx.font="11px system-ui,sans-serif";
   groups.forEach((g,i)=>{ctx.fillStyle=COLORS[i%COLORS.length];ctx.fillRect(58+i*124,6,14,4);
-    ctx.fillStyle="#33423e";ctx.fillText("p="+g.label,78+i*124,10);});
+    ctx.fillStyle="#33423e";ctx.fillText((g.experimentType==="predation"?"predators=":"p=")+g.label,78+i*124,10);});
 }
 export function renderFinalPopulation(canvas,groups){
   const {ctx,width:w,height:h}=canvasSetup(canvas);
@@ -96,6 +96,6 @@ export function renderGeneHistogram(canvas,groups){
   }
   ctx.font="11px system-ui";ctx.fillStyle="#2b6ff3";ctx.fillText("■ 초기",70,10);
   ctx.fillStyle="#de762c";ctx.fillText("■ 종료(생존 집단)",145,10);
-  ctx.fillStyle="#263d36";ctx.fillText("p="+first.label+" 상대빈도",275,10);
+  ctx.fillStyle="#263d36";ctx.fillText((first.experimentType==="predation"?"predators=":"p=")+first.label+" 상대빈도",275,10);
 }
 export function numericText(v,digits=2){return v===null?"N/A":fmt(Number(v).toFixed(digits));}

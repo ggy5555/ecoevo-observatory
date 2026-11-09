@@ -21,3 +21,6 @@
 @media(max-width:1220px){.observation-grid{grid-template-columns:minmax(250px,1fr) minmax(440px,2fr)}.obs-details{grid-column:1/-1}.obs-stats{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px}}
 @media(max-width:790px){.observation-grid{grid-template-columns:1fr}.obs-details{grid-column:auto}.obs-canvas-panel{order:-1}.obs-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:440px){.obs-stats{grid-template-columns:1fr}}
+
+/* P1 Experiment mode selector */
+.form-panel select{display:block;border:1px solid #c4d4ce;background:#fff;border-radius:9px;width:100%;padding:12px;min-height:44px;color:#182f27}

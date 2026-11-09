@@ -4,7 +4,7 @@ import {aggregate} from "../experiments/aggregation.js";
 import {exportRunsCsv,exportTimeseriesCsv,exportMetadata} from "../experiments/export.js";
 import {renderLineChart,renderFinalPopulation,renderGeneHistogram} from "../ui/charts.js";
 const $=id=>document.getElementById(id);
-const el={form:$("experimentForm"),hypothesis:$("hypothesis"),conditions:$("conditions"),
+const el={form:$("experimentForm"),mode:$("experimentType"),hypothesis:$("hypothesis"),conditions:$("conditions"),
   replicates:$("replicates"),ticks:$("ticks"),sampleInterval:$("sampleInterval"),baseSeed:$("baseSeed"),
   errors:$("validationErrors"),estimate:$("workEstimate"),runCount:$("runEstimate"),
   conditionsPreview:$("conditionsPreview"),seedPreview:$("seedPreview"),start:$("startExperiment"),cancel:$("cancelExperiment"),
@@ -12,18 +12,18 @@ const el={form:$("experimentForm"),hypothesis:$("hypothesis"),conditions:$("cond
   results:$("resultSection"),empty:$("emptyState"),note:$("resultNote"),kpis:$("resultKpis")};
 let worker=null,jobId=null,result=null,running=false;
 const nf=(n,d=2)=>n===null||n===undefined?"N/A":Number(n).toLocaleString("ko-KR",{maximumFractionDigits:d});
-const readPlan=()=>({experimentType:"resource",
+const readPlan=()=>({experimentType:el.mode.value,
   conditions:el.conditions.value.split(",").map(x=>x.trim()).filter(x=>x!=="").map(Number),
   replicates:Number(el.replicates.value),ticks:Number(el.ticks.value),sampleInterval:Number(el.sampleInterval.value),
   baseSeed:el.baseSeed.value,hypothesis:el.hypothesis.value.trim()});
 function renderPreview() {
   const check=validatePlan(readPlan()),plan=check.plan;
   el.errors.textContent=check.errors.join("\n");
-  el.start.disabled=running||!check.valid||Boolean(new URLSearchParams(location.search).get("mode")&&new URLSearchParams(location.search).get("mode")!=="resource");
+  el.start.disabled=running||!check.valid;
   el.estimate.textContent=Number.isFinite(check.work)?nf(check.work,0)+" ticks":"설정 확인";
   el.runCount.textContent=Number.isFinite(plan.replicates)?nf(plan.conditions.length*plan.replicates,0)+" runs":"설정 확인";
   el.conditionsPreview.replaceChildren();
-  for(const value of plan.conditions){const x=document.createElement("span");x.textContent=Number.isFinite(value)?value.toFixed(2):"잘못된 값";el.conditionsPreview.append(x);}
+  for(const value of plan.conditions){const x=document.createElement("span");x.textContent=Number.isFinite(value)?(plan.experimentType==="predation"?String(value):value.toFixed(2)):"잘못된 값";el.conditionsPreview.append(x);}
   el.seedPreview.replaceChildren();
   if(!check.errors.some(e=>e.includes("시드"))) {
     for(let i=0;i<Math.min(5,Number.isInteger(plan.replicates)?plan.replicates:0);i++){
@@ -35,7 +35,7 @@ function renderPreview() {
 function setRunning(value) {
   running=value;
   el.start.hidden=value;el.cancel.hidden=!value;el.cancel.disabled=false;el.start.disabled=value;
-  for(const item of el.form.querySelectorAll("input,textarea"))item.disabled=value;
+  for(const item of el.form.querySelectorAll("input,textarea,select"))item.disabled=value;
   $("newSeed").disabled=value;
   if(!value)renderPreview();
 }
@@ -60,6 +60,7 @@ function renderResults(){
   if(!result)return;
   el.empty.hidden=true;el.results.hidden=false;
   const analysis=aggregate(result),groups=analysis.groups,completed=groups.reduce((s,g)=>s+g.completeRuns,0);
+  const predation=result.plan.experimentType==="predation";
   const overallExtinct=groups.reduce((s,g)=>s+g.extinctCount,0);
   const overallSurvive=groups.reduce((s,g)=>s+g.survivorCount,0);
   el.note.textContent=result.status==="cancelled"?
@@ -70,18 +71,24 @@ function renderResults(){
   addKpi("관찰 기간 내 멸종",completed?nf(overallExtinct/completed*100,1)+"%":"N/A");
   addKpi("살아남은 집단",nf(overallSurvive,0)+" runs");
   addKpi("제외 / overflow",nf(result.runs.length-completed,0)+" runs");
+  if(predation)addKpi("포식으로 인한 사망",nf(result.runs.reduce((s,r)=>s+r.summary.deathsPredation,0),0)+" total");
   const summaryBody=$("summaryTable").querySelector("tbody");summaryBody.replaceChildren();
   for(const group of groups){
     const tr=document.createElement("tr");
     addCells(tr,[group.label,group.completeRuns,group.extinctionRate===null?"N/A":nf(group.extinctionRate*100,1)+"%",
-      nf(group.finalPopulationMean),nf(group.finalPopulationSD),nf(group.finalGeneMean,4),group.survivorCount,nf(group.meanBirths)]);
+      nf(group.finalPopulationMean),nf(group.finalPopulationSD),nf(group.finalGeneMean,4),group.survivorCount,nf(group.meanBirths),nf(group.meanPredationDeaths)]);
     summaryBody.append(tr);
   }
   const runBody=$("runsTable").querySelector("tbody");runBody.replaceChildren();
   for(const run of result.runs){
     const s=run.summary,tr=document.createElement("tr");
     addCells(tr,[s.conditionValue.toFixed(2),s.replicateIndex+1,s.seed,s.runStatus,s.ticksCompleted,
-      s.finalPopulation,nf(s.finalMeanSpeedGene,4),s.extinctionTick]);runBody.append(tr);
+      s.finalPopulation,nf(s.finalMeanSpeedGene,4),s.extinctionTick,s.deathsPredation]);runBody.append(tr);
+  }
+  const paired=$("pairedTable").querySelector("tbody");paired.replaceChildren();
+  for(const entry of analysis.paired){
+    const tr=document.createElement("tr");
+    addCells(tr,[entry.seed,entry.deltaPopulation,nf(entry.deltaGene,4)]);paired.append(tr);
   }
   renderLineChart($("populationChart"),groups,"populationMean",{band:true});
   renderLineChart($("geneChart"),groups,"geneMean",{maxY:1});
@@ -154,11 +161,27 @@ function renderResultsNoScroll(){
   renderFinalPopulation($("finalChart"),groups);
   renderGeneHistogram($("geneHistogram"),groups);
 }
-const mode=new URLSearchParams(location.search).get("mode");
-if(mode&&mode!=="resource"){
-  el.errors.textContent="이 실험 모드는 후속 개발(P1) 예정입니다. 현재는 Resource Trade-off만 실행할 수 있습니다.";
-  el.start.disabled=true;
-  el.form.addEventListener("submit",e=>e.preventDefault());
-} else {
+function applyMode(mode){
+  const predation=mode==="predation";
+  el.mode.value=predation?"predation":"resource";
+  $("experimentTitle").textContent=predation?"Predation Selection":"Resource Trade-off";
+  $("experimentDescription").textContent=predation?
+    "포식자 수만 달리하고 나머지 조건을 통제합니다. 회피·포획·번식이 유전형질과 생존에 미치는 영향을 같은 시드로 비교합니다.":
+    "먹이 생성확률을 바꾸되 다른 조건은 고정합니다. 반복 실행으로 개체 수·유전형질·멸종률을 비교하세요.";
+  $("conditionLabel").innerHTML=predation?"포식자 수 <small>2~4개 · 정수 0~50</small>":
+    "먹이 생성확률 <small>2~4개 · 0~0.50 · 0.01 간격</small>";
+  $("conditionsHint").textContent=predation?
+    "쉼표로 구분하세요. 기본값 0 / 10 / 30 / 50. 고밀도 조건의 조기 멸종도 기록합니다.":
+    "쉼표로 구분하세요. 기본값 0.15 / 0.25 / 0.35";
+  $("controlledText").textContent=predation?
+    "먹이 생성확률 0.25 · 초기 Prey 30 · 초기 Food 50 · 최대 Food 80 · 번식 기준 100 · 돌연변이 5%":
+    "초기 Prey 30 · 초기 Food 50 · 최대 Food 80 · 초기 에너지 50 · 번식 기준 100 · 돌연변이 5% · 포식자 0";
+  $("conditionColumnHeader").textContent=predation?"Predators":"Food p";
+  el.conditions.value=predation?"0, 10, 30, 50":"0.15, 0.25, 0.35";
+  el.hypothesis.placeholder=predation?"포식자 수가 변하면 피식자의 생존과 속도형질이…":"먹이 생성확률이 높으면 집단 규모가…";
+  el.results.hidden=true;el.empty.hidden=false;el.empty.textContent="실험 설정을 확인하고 실행하세요.";result=null;
   renderPreview();
 }
+el.mode.addEventListener("change",()=>applyMode(el.mode.value));
+const requested=new URLSearchParams(location.search).get("mode");
+applyMode(requested==="predation"?"predation":"resource");

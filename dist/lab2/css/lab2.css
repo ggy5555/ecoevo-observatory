@@ -24,3 +24,5 @@
 
 /* P1 Experiment mode selector */
 .form-panel select{display:block;border:1px solid #c4d4ce;background:#fff;border-radius:9px;width:100%;padding:12px;min-height:44px;color:#182f27}
+
+#historyPanel{margin-top:22px}#historyPanel h2{margin:0}#historyPanel label{display:block;margin:14px 0 7px;font-weight:700;font-size:.8rem}#historySelect{display:block;width:100%;max-width:760px;min-height:44px;border:1px solid #c4d4ce;background:#fff;border-radius:9px;padding:10px}

@@ -1,4 +1,5 @@
 import {DEFAULT_PLAN,validatePlan} from "../experiments/validation.js";
+import {listHistory,loadHistory,saveHistory,deleteHistory} from "../ui/storage.js";
 import {deriveSeed} from "../core/rng.js";
 import {aggregate} from "../experiments/aggregation.js";
 import {exportRunsCsv,exportTimeseriesCsv,exportMetadata} from "../experiments/export.js";
@@ -126,6 +127,45 @@ function run(){
     worker.postMessage({type:"START",jobId,plan});
   }catch(error){closeWorker();el.errors.textContent="Worker 시작 실패: "+String(error.message||error);}
 }
+async function refreshHistory(){
+  try{
+    const rows=await listHistory(),select=$("historySelect");
+    select.replaceChildren();
+    if(!rows.length){const option=document.createElement("option");option.value="";option.textContent="저장된 기록 없음";select.append(option);}
+    for(const item of rows){
+      const option=document.createElement("option");option.value=item.id;
+      option.textContent=item.savedAt.slice(0,19).replace("T"," ")+" · "+item.summary.type+" · "+item.summary.conditions.join("/")+" · "+item.summary.runCount+" runs";
+      select.append(option);
+    }
+    $("historyStatus").textContent=rows.length+" / 20개 보관 중";
+    $("loadHistory").disabled=rows.length===0;$("deleteHistory").disabled=rows.length===0;
+  }catch(error){
+    $("historyStatus").textContent="저장소를 사용할 수 없습니다. 데이터 다운로드는 계속 이용할 수 있습니다. ("+String(error.message||error)+")";
+    $("loadHistory").disabled=true;$("deleteHistory").disabled=true;
+  }
+}
+$("saveHistory").addEventListener("click",async()=>{
+  if(!result)return;
+  try{
+    const saved=await saveHistory(result,oldest=>window.confirm("저장 한도 20건에 도달했습니다. 가장 오래된 기록 ("+oldest.id+")을 삭제하고 새 결과를 저장할까요?"));
+    $("historyStatus").textContent=saved?"이번 실험을 저장했습니다.":"저장이 취소되었습니다.";
+    await refreshHistory();
+  }catch(error){$("historyStatus").textContent="저장 실패: "+String(error.message||error)+". CSV/JSON으로 다운로드할 수 있습니다.";}
+});
+$("loadHistory").addEventListener("click",async()=>{
+  try{
+    const restored=await loadHistory($("historySelect").value);
+    if(!restored)throw new Error("저장된 결과를 찾을 수 없습니다.");
+    result=restored;renderResults();$("historyStatus").textContent="저장된 "+restored.plan.experimentType+" 실험 결과를 열었습니다.";
+  }catch(error){$("historyStatus").textContent="불러오기 실패: "+String(error.message||error);}
+});
+$("deleteHistory").addEventListener("click",async()=>{
+  const id=$("historySelect").value;if(!id)return;
+  if(!window.confirm("이 브라우저에 저장된 실험 기록 "+id+"을 삭제할까요?"))return;
+  try{await deleteHistory(id);await refreshHistory();$("historyStatus").textContent="선택한 실험 기록을 삭제했습니다.";}
+  catch(error){$("historyStatus").textContent="삭제 실패: "+String(error.message||error);}
+});
+refreshHistory();
 function download(text,filename,type){
   try{
     const blob=new Blob([type.startsWith("text/csv")?"\ufeff":"",text],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");

@@ -31,13 +31,15 @@ export function exportTimeseriesCsv(result) {
   return csv(rows);
 }
 export function exportMetadata(result) {
+  const controlled={...MODEL_V2_DEFAULTS,predatorCount:0};
+  delete controlled.foodSpawnProbability;
   return JSON.stringify({schemaVersion:"1.0",modelVersion:MODEL_VERSION,
     experimentId:result.plan.experimentId,experimentType:"resource",hypothesis:result.plan.hypothesis,
     independentVariable:"foodSpawnProbability",conditions:result.plan.conditions,
     replicates:result.plan.replicates,ticks:result.plan.ticks,sampleInterval:result.plan.sampleInterval,
     baseSeed:result.plan.baseSeed,replicateSeeds:Array.from({length:result.plan.replicates},(_,i)=>
       deriveSeed(result.plan.baseSeed,"replicate:"+i)),rngAlgorithm:RNG_ALGORITHM,
-    controlledParameters:{...MODEL_V2_DEFAULTS,predatorCount:0},
+    controlledParameters:controlled,
     completedRuns:result.runs.filter(r=>r.summary.runStatus==="completed"||r.summary.runStatus==="extinct_completed").length,
     excludedRuns:result.runs.filter(r=>r.summary.runStatus!=="completed"&&r.summary.runStatus!=="extinct_completed")
       .map(r=>({condition:r.summary.conditionId,seed:r.summary.seed,status:r.summary.runStatus})),

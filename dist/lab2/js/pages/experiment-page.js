@@ -19,7 +19,7 @@ const readPlan=()=>({experimentType:"resource",
 function renderPreview() {
   const check=validatePlan(readPlan()),plan=check.plan;
   el.errors.textContent=check.errors.join("\n");
-  el.start.disabled=running||!check.valid;
+  el.start.disabled=running||!check.valid||Boolean(new URLSearchParams(location.search).get("mode")&&new URLSearchParams(location.search).get("mode")!=="resource");
   el.estimate.textContent=Number.isFinite(check.work)?nf(check.work,0)+" ticks":"설정 확인";
   el.runCount.textContent=Number.isFinite(plan.replicates)?nf(plan.conditions.length*plan.replicates,0)+" runs":"설정 확인";
   el.conditionsPreview.replaceChildren();
@@ -34,7 +34,7 @@ function renderPreview() {
 }
 function setRunning(value) {
   running=value;
-  el.start.hidden=value;el.cancel.hidden=!value;el.start.disabled=value;
+  el.start.hidden=value;el.cancel.hidden=!value;el.cancel.disabled=false;el.start.disabled=value;
   for(const item of el.form.querySelectorAll("input,textarea"))item.disabled=value;
   $("newSeed").disabled=value;
   if(!value)renderPreview();
@@ -121,7 +121,7 @@ function run(){
 }
 function download(text,filename,type){
   try{
-    const blob=new Blob(["\ufeff",text],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");
+    const blob=new Blob([type.startsWith("text/csv")?"\ufeff":"",text],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");
     a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }catch(err){el.errors.textContent="파일 내보내기 실패: "+String(err.message||err);}
 }

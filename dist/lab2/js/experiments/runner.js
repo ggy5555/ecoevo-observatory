@@ -32,8 +32,7 @@ export async function runExperiment(rawPlan,{onProgress=()=>{},shouldCancel=()=>
       const samples=[snapshot(world)];
       let status="completed";
       for(let step=1;step<=plan.ticks;step++) {
-        if(world.prey.length)updateTick(world);
-        else {world.tick++;world.stats={...world.stats,tick:world.tick};}
+        updateTick(world);
         if(step%plan.sampleInterval===0||step===plan.ticks) samples.push(snapshot(world));
         if(world.prey.length>2000) {
           status="overflow";

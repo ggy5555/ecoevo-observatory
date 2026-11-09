@@ -98,3 +98,22 @@ python -m http.server 8000 --directory dist
 ```
 
 그 다음 `http://localhost:8000/lab2/`에서 실험을 실행할 수 있습니다. `file://`에서는 모듈 Worker가 동작하지 않을 수 있습니다.
+
+## LAB 2.0 P1 — Observation & Predation Selection
+
+기존 Observatory 0.2와 LAB 2.0 P0를 유지하며 P1을 확장했습니다.
+
+- [Observation](https://ggy5555.github.io/ecoevo-observatory/lab2/observe.html): 시드 재현, Food p/포식자 수 설정, 일시정지·단일 tick·속도 변경, prey/food/predator Canvas, 클릭 Inspector, 개체 수·형질 그래프
+- [Predation Selection](https://ggy5555.github.io/ecoevo-observatory/lab2/experiment.html?mode=predation): 포식자 수 0~50 중 2~4조건 비교, 반복 시드 고정, Worker 실험·CSV/JSON·통계·같은 시드 짝비교
+- Prey 회피 감지 반경 70, predator 추적 감지 반경 140, 속도 1.8, 배회 0.35, 포획 반경 6, tick당 최대 1포획. 이 값은 실제 측정이 아닌 **가상 실험 파라미터**입니다.
+- Model version: `lab2-ecology-2.1.0`. 초기 prey·food는 조건별 같은 seed로 재현하고 자연선택 결과를 하드코딩하지 않습니다.
+- IndexedDB에 최근 결과 최대 20건을 수동 저장/다시 열기/삭제할 수 있습니다. 저장소 사용 불가 시에도 CSV/JSON 다운로드가 가능합니다.
+- 고밀도 포식자 조건의 조기 멸종도 그대로 기록합니다. 유전형질 평균은 생존 개체군에 한해 계산합니다.
+- Wright–Fisher 유전적 부동은 P2 후속 기능입니다.
+
+### 검증 및 로컬 실행
+```bash
+npm test
+python -m http.server 8000 --directory dist
+```
+`http://localhost:8000/lab2/observe.html` 및 `/lab2/experiment.html?mode=predation`에서 실행 가능합니다.

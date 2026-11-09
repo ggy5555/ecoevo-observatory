@@ -82,19 +82,19 @@ npm test
 기존 Observatory MVP 0.2는 유지하며, 상단 **LAB 2.0** 버튼으로 별도의 연구 실험실에 이동할 수 있습니다.
 
 - URL: https://ggy5555.github.io/ecoevo-observatory/lab2/
-- Resource 실험 빌더: \`dist/lab2/experiment.html\`
+- Resource 실험 빌더: `dist/lab2/experiment.html`
 - 시드가 고정된 반복 실행(기본 3조건 × 10반복 × 3000 ticks), Web Worker, 진행률·취소
 - population/speedGene 시계열, 멸종률·최종 개체 수 분포, CSV/JSON 내보내기
 - Methods에 모델 수식·가정·기존 MVP와 차이 공개
 - **P1/P2 예정:** Observation/Predation Selection, Wright–Fisher Genetic Drift
 
-엔진은 \`dist/lab2/js/core/\`, 실험 계산은 \`dist/lab2/js/experiments/\`에 독립 구현되었습니다.
-기존 \`dist/js/\`를 수정하지 않았습니다. 동일한 시드/설정/버전으로 반복 실행을 재현할 수 있습니다.
+엔진은 `dist/lab2/js/core/`, 실험 계산은 `dist/lab2/js/experiments/`에 독립 구현되었습니다.
+기존 `dist/js/`를 수정하지 않았습니다. 동일한 시드/설정/버전으로 반복 실행을 재현할 수 있습니다.
 실제 생태계 예측이 아닌 개념 탐구를 위한 가상 모델입니다.
 
-\`\`\`bash
+```bash
 npm test
 python -m http.server 8000 --directory dist
-\`\`\`
+```
 
-그 다음 \`http://localhost:8000/lab2/\`에서 실험을 실행할 수 있습니다. \`file://\`에서는 모듈 Worker가 동작하지 않을 수 있습니다.
+그 다음 `http://localhost:8000/lab2/`에서 실험을 실행할 수 있습니다. `file://`에서는 모듈 Worker가 동작하지 않을 수 있습니다.

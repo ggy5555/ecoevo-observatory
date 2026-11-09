@@ -110,6 +110,11 @@ function reproduce(prey,world) {
 }
 export function updateTick(world) {
   if(world.prey.length===0) {
+    // Even after extinction, external food input continues in the open model.
+    if(world.food.length<world.config.maxFood && world.rng.foodSpawn()<world.config.foodSpawnProbability) {
+      const r=world.rng.foodSpawn;
+      world.food.push({id:world.nextFoodId++,x:r()*world.config.width,y:r()*world.config.height,energyValue:world.config.foodEnergy});
+    }
     world.tick++;world.stats=calculateStats(world);return world.stats;
   }
   const ordered=shuffleSeeded(world.prey.slice(),world.rng.shuffle);

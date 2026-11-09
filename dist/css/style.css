@@ -1582,3 +1582,9 @@ footer {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Minimal LAB 2.0 entrance. The legacy interface and scripts remain unchanged. */
+.lab2-entry{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;white-space:nowrap;padding:9px 13px;background:#0f5d52;border:1px solid #0f5d52;border-radius:999px;color:#fff;text-decoration:none;font-weight:750;font-size:.78rem;transition:background .15s}
+.lab2-entry:hover{background:#0b443c;text-decoration:none}
+.lab2-entry:focus-visible{outline:3px solid #2b6ff3;outline-offset:3px}
+@media(max-width:630px){.topbar{height:auto;min-height:72px;flex-wrap:wrap;gap:8px;padding:10px 12px}.topbar-actions{gap:6px;flex-wrap:wrap}.lab2-entry{min-height:40px;padding:8px 11px}}

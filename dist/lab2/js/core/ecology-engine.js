@@ -1,5 +1,5 @@
 import { createStreams, shuffleSeeded, normalRandom, normalizeSeed } from "./rng.js";
-export const MODEL_VERSION = "lab2-ecology-2.0.0";
+export const MODEL_VERSION = "lab2-ecology-2.1.0";
 export const MODEL_V2_DEFAULTS = Object.freeze({
   width:800, height:600, initialPrey:30, initialFood:50, maxFood:80,
   foodSpawnProbability:0.25, foodEnergy:25, initialEnergy:50, reproductionThreshold:100,
@@ -44,7 +44,7 @@ export function createWorld(configOverrides={},seed=314159) {
   const world={version:MODEL_VERSION,config,seed:normalizeSeed(seed),rng:createStreams(seed),
     tick:0,prey:[],food:[],predators:[],nextPreyId:1,nextFoodId:1,
     births:0,deathsByCause:{energy:0,age:0,predation:0},consumedFoodCount:0,
-    extinctionTick:null,populationSum:0,energyMeanSum:0,energyMeanTicks:0};
+    extinctionTick:null,populationSum:0,energyMeanSum:0,energyMeanTicks:0,recentDeaths:[]};
   for(let i=0;i<config.initialPrey;i++) {
     const r=world.rng.initialPrey;
     world.prey.push(newPrey(world,{x:r()*config.width,y:r()*config.height,
@@ -112,6 +112,12 @@ function movePrey(prey,world) {
   prey.distanceTravelled+=step;
   prey.energy-=cfg.baseCost+cfg.motionCostFactor*step*step;
 }
+function recordDeath(world,prey,cause){
+  if(!prey.alive)return;
+  prey.alive=false;prey.deathCause=cause;world.deathsByCause[cause]++;
+  world.recentDeaths.push({...prey});
+  if(world.recentDeaths.length>200)world.recentDeaths.shift();
+}
 function advancePredators(world){
   if(!world.predators.length)return;
   const cfg=world.config,r=world.rng.predatorAction;
@@ -147,7 +153,7 @@ function advancePredators(world){
         victim=prey;near=d;
       }
     }
-    if(victim){victim.alive=false;victim.deathCause="predation";world.deathsByCause.predation++;predator.captureCount++;}
+    if(victim){recordDeath(world,victim,"predation");predator.captureCount++;}
   }
 }
 function eatOne(prey,world) {
@@ -190,7 +196,7 @@ export function updateTick(world) {
     if(!prey.alive)continue;
     prey.age++;
     const cause=prey.energy<=0?"energy":prey.age>=world.config.maxAge?"age":null;
-    if(cause){prey.alive=false;prey.deathCause=cause;world.deathsByCause[cause]++;}
+    if(cause)recordDeath(world,prey,cause);
   }
   world.prey=ordered.filter(p=>p.alive);
   world.prey.push(...newborn);

@@ -5,7 +5,7 @@ const canvas=$("observeCanvas"),ctx=canvas.getContext("2d");
 const fields={tick:"obsTick",population:"obsPopulation",foodCount:"obsFood",predatorCount:"obsPredatorCount",
   meanSpeedGene:"obsGene",meanEnergy:"obsEnergy",births:"obsBirths",foodConsumed:"obsEaten",
   deathsEnergy:"obsDeadEnergy",deathsAge:"obsDeadAge",deathsPredation:"obsDeadPredation"};
-let world,playing=false,lastTime=0,accumulator=0,history=[],selection=null,lastSelected=null;
+let world,playing=false,lastTime=0,accumulator=0,history=[],selection=null,lastSelected=null,lastRenderedSample=-1;
 const maxSamples=2000;
 function readSettings(){
   return {foodSpawnProbability:Number($("observeFood").value),
@@ -31,7 +31,7 @@ function reset(){
   pause();
   try{
     const p=readSettings();world=createWorld({foodSpawnProbability:p.foodSpawnProbability,predatorCount:p.predatorCount},p.seed);
-    history=[];selection=null;lastSelected=null;record();$("observeErrors").textContent="";
+    history=[];selection=null;lastSelected=null;lastRenderedSample=-1;record();$("observeErrors").textContent="";
     updateStats();render();drawCharts();updateControls();
   }catch(err){$("observeErrors").textContent=String(err.message||err);}
 }
@@ -43,7 +43,7 @@ function updateStats(){
   const list=selection.type==="Prey"?world.prey:world.predators;
   const current=list.find(x=>x.id===selection.id);
   if(current)lastSelected={...current};
-  const item=current||lastSelected;
+  const item=current||world.recentDeaths.find(x=>selection.type==="Prey"&&x.id===selection.id)||lastSelected;
   $("obsClear").disabled=false;
   if(!item){$("obsInspector").textContent="선택한 개체를 찾을 수 없습니다.";return;}
   const title=document.createElement("h3");title.textContent=selection.type+" #"+item.id;
@@ -119,6 +119,7 @@ function step(){
     const list=selection.type==="Prey"?world.prey:world.predators;
     const current=list.find(p=>p.id===selection.id);
     if(current)lastSelected={...current};
+    else if(selection.type==="Prey")lastSelected=world.recentDeaths.find(x=>x.id===selection.id)||lastSelected;
   }
   if(world.prey.length===0)pause();
 }
@@ -128,7 +129,7 @@ function frame(now){
   if(playing){accumulator+=dt*Number($("observeSpeed").value);
     let n=0;while(accumulator>=50&&n<80&&playing){step();accumulator-=50;n++;}
     if(n===80)accumulator=0;
-    if(n){updateStats();render();if(world.tick%10<20)drawCharts();updateControls();}
+    if(n){updateStats();render();const sampleTick=history.at(-1)?.tick;if(sampleTick!==lastRenderedSample){drawCharts();lastRenderedSample=sampleTick;}updateControls();}
   }
   requestAnimationFrame(frame);
 }

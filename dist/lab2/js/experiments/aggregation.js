@@ -24,14 +24,15 @@ export function aggregate(result) {
       return {tick,n:at.length,populationMean:mean(population),popLow:percentile(population,10),
         popHigh:percentile(population,90),geneMean:mean(genes),geneN:genes.length};
     });
-    return {condition,label:condition.toFixed(2),completeRuns:complete.length,
+    return {condition,experimentType:result.plan.experimentType,label:result.plan.experimentType==="predation"?String(condition):condition.toFixed(2),completeRuns:complete.length,
       excludedRuns:selected.length-complete.length,
       extinctCount:complete.filter(run=>run.summary.extinct).length,
       extinctionRate:complete.length?complete.filter(run=>run.summary.extinct).length/complete.length:null,
       finalPopulationMean:mean(pop),finalPopulationSD:sampleSD(pop),
       finalGeneMean:mean(alive.map(run=>run.summary.finalMeanSpeedGene)),
       survivorCount:alive.length,meanBirths:mean(complete.map(run=>run.summary.births)),
-      meanDeaths:mean(complete.map(run=>run.summary.deathsEnergy+run.summary.deathsAge)),
+      meanDeaths:mean(complete.map(run=>run.summary.deathsEnergy+run.summary.deathsAge+run.summary.deathsPredation)),
+      meanPredationDeaths:mean(complete.map(run=>run.summary.deathsPredation)),
       runs:complete,series};
   });
   const paired=[];

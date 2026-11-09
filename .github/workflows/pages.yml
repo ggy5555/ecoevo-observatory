@@ -56,7 +56,14 @@ jobs:
                && curl -fsSL --max-time 20 "$BASE/lab2/experiment.html" -o /tmp/eco-experiment.html \
                && grep -q 'id="startExperiment"' /tmp/eco-experiment.html \
                && curl -fsSL --max-time 20 "$BASE/lab2/js/core/ecology-engine.js" -o /tmp/eco-engine.js \
-               && grep -q 'MODEL_VERSION' /tmp/eco-engine.js; then
+               && grep -q 'MODEL_VERSION' /tmp/eco-engine.js \
+               && curl -fsSL --max-time 20 "$BASE/lab2/observe.html" -o /tmp/eco-observe.html \
+               && grep -q 'observeCanvas' /tmp/eco-observe.html \
+               && curl -fsSL --max-time 20 "$BASE/lab2/js/pages/observe-page.js" -o /tmp/eco-observe.js \
+               && grep -q 'createWorld' /tmp/eco-observe.js \
+               && curl -fsSL --max-time 20 "$BASE/lab2/js/core/ecology-engine.js" -o /tmp/eco-predator.js \
+               && grep -q 'advancePredators' /tmp/eco-predator.js \
+               && grep -q 'experimentType' /tmp/eco-experiment.html; then
               echo "Live GitHub Pages smoke verification succeeded."
               exit 0
             fi

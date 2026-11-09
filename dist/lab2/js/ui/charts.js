@@ -81,11 +81,13 @@ export function renderGeneHistogram(canvas,groups){
   const {ctx,width:w,height:h}=canvasSetup(canvas);
   const first=groups[0];
   if(!first?.runs.length){ctx.fillStyle="#64736f";ctx.fillText("분석 가능한 개체 없음",20,40);return;}
+  // P0: compare relative distributions for one explicitly identified condition.
+  // Pooled raw counts across unequal living population sizes would be misleading.
   const initial=first.runs.flatMap(r=>r.initialGenes);
-  const final=groups.flatMap(g=>g.runs.flatMap(r=>r.finalGenes));
+  const final=first.runs.flatMap(r=>r.finalGenes);
   const bins=xs=>Array.from({length:10},(_,i)=>xs.filter(v=>Math.min(9,Math.floor(v*10))===i).length);
-  const a0=bins(initial),a1=bins(final),max=Math.max(1,...a0,...a1)*1.12;
-  const a=axes(ctx,w,h,10,max,"speedGene 범위 0~1");
+  const a0=bins(initial).map(n=>n/Math.max(1,initial.length)),a1=bins(final).map(n=>n/Math.max(1,final.length)),max=Math.max(0.05,...a0,...a1)*1.12;
+  const a=axes(ctx,w,h,10,max,"speedGene 범위 0~1",2);
   const base=a.y(0);
   for(let i=0;i<10;i++){
     const l=a.x(i+.18),barW=Math.min(19,a.plotW/25);
@@ -94,5 +96,6 @@ export function renderGeneHistogram(canvas,groups){
   }
   ctx.font="11px system-ui";ctx.fillStyle="#2b6ff3";ctx.fillText("■ 초기",70,10);
   ctx.fillStyle="#de762c";ctx.fillText("■ 종료(생존 집단)",145,10);
+  ctx.fillStyle="#263d36";ctx.fillText("p="+first.label+" 상대빈도",275,10);
 }
 export function numericText(v,digits=2){return v===null?"N/A":fmt(Number(v).toFixed(digits));}

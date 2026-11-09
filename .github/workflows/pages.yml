@@ -43,3 +43,25 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify published LAB 2.0 routes and static assets
+        run: |
+          set -euo pipefail
+          BASE="https://ggy5555.github.io/ecoevo-observatory"
+          for attempt in $(seq 1 10); do
+            if curl -fsSL --max-time 20 "$BASE/" -o /tmp/eco-root.html \
+               && grep -q 'href="./lab2/"' /tmp/eco-root.html \
+               && curl -fsSL --max-time 20 "$BASE/lab2/" -o /tmp/eco-lab.html \
+               && grep -q 'Resource Trade-off' /tmp/eco-lab.html \
+               && curl -fsSL --max-time 20 "$BASE/lab2/experiment.html" -o /tmp/eco-experiment.html \
+               && grep -q 'id="startExperiment"' /tmp/eco-experiment.html \
+               && curl -fsSL --max-time 20 "$BASE/lab2/js/core/ecology-engine.js" -o /tmp/eco-engine.js \
+               && grep -q 'MODEL_VERSION' /tmp/eco-engine.js; then
+              echo "Live GitHub Pages smoke verification succeeded."
+              exit 0
+            fi
+            echo "Public Pages content not current yet, attempt $attempt / 10."
+            sleep 5
+          done
+          echo "Live GitHub Pages smoke verification failed."
+          exit 1

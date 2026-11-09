@@ -24,6 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run legacy and LAB 2.0 tests
+        run: npm test
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

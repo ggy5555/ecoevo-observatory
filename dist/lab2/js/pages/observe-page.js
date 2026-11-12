@@ -31,7 +31,7 @@ function reset(){
   pause();
   try{
     const p=readSettings();world=createWorld({foodSpawnProbability:p.foodSpawnProbability,predatorCount:p.predatorCount},p.seed);
-    history=[];selection=null;lastSelected=null;lastRenderedSample=-1;record();$("observeErrors").textContent="";
+    history=[];selection=null;lastSelected=null;lastRenderedSample=-1;record();$("observeErrors").textContent="";$("observeApplyStatus").textContent="현재 표시된 조건은 마지막 Reset 기준입니다.";
     updateStats();render();drawCharts();updateControls();
   }catch(err){$("observeErrors").textContent=String(err.message||err);}
 }
@@ -148,12 +148,13 @@ $("obsClear").addEventListener("click",()=>{selection=null;lastSelected=null;upd
 $("observeToggle").addEventListener("click",()=>{if(!world)return;playing=!playing;lastTime=performance.now();accumulator=0;updateControls();});
 $("observeStep").addEventListener("click",()=>{step();updateStats();render();drawCharts();updateControls();});
 $("observeReset").addEventListener("click",reset);
-$("observeMode").addEventListener("change",()=>{$("observePredators").disabled=$("observeMode").value!=="predation";$("observeErrors").textContent="모드 변경을 반영하려면 Reset을 누르세요.";});
-$("observeFood").addEventListener("input",()=>{$("foodValue").textContent=Number($("observeFood").value).toFixed(2)+" / tick";});
-$("observePredators").addEventListener("input",()=>{$("predatorValue").textContent=$("observePredators").value;});
+$("observeMode").addEventListener("change",()=>{$("observePredators").disabled=$("observeMode").value!=="predation";$("observeErrors").textContent="모드 변경을 반영하려면 Reset을 누르세요.";$("observeApplyStatus").textContent="변경된 조건이 있습니다 · Reset 후 적용";});
+$("observeFood").addEventListener("input",()=>{$("foodValue").textContent=Number($("observeFood").value).toFixed(2)+" / tick";$("observeApplyStatus").textContent="변경된 조건이 있습니다 · Reset 후 적용";});
+$("observePredators").addEventListener("input",()=>{$("predatorValue").textContent=$("observePredators").value;$("observeApplyStatus").textContent="변경된 조건이 있습니다 · Reset 후 적용";});
 $("observeNewSeed").addEventListener("click",()=>{
   const a=new Uint32Array(1);if(globalThis.crypto?.getRandomValues)crypto.getRandomValues(a);else a[0]=Math.floor(Math.random()*4294967296);
-  $("observeSeed").value=String(a[0]);$("observeErrors").textContent="새 시드를 적용하려면 Reset을 누르세요.";
+  $("observeSeed").value=String(a[0]);$("observeErrors").textContent="새 시드를 적용하려면 Reset을 누르세요.";$("observeApplyStatus").textContent="변경된 조건이 있습니다 · Reset 후 적용";
 });
+$("observeSeed").addEventListener("input",()=>{$("observeApplyStatus").textContent="변경된 조건이 있습니다 · Reset 후 적용";});
 window.addEventListener("resize",()=>{if(world){render();drawCharts();}});
 reset();requestAnimationFrame(frame);

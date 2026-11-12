@@ -1,3 +1,4 @@
+@import url("./design-tokens.css");
 :root {
   color-scheme: light;
   --bg: #edf3f1;
@@ -1588,3 +1589,62 @@ footer {
 .lab2-entry:hover{background:#0b443c;text-decoration:none}
 .lab2-entry:focus-visible{outline:3px solid #2b6ff3;outline-offset:3px}
 @media(max-width:630px){.topbar{height:auto;min-height:72px;flex-wrap:wrap;gap:8px;padding:10px 12px}.topbar-actions{gap:6px;flex-wrap:wrap}.lab2-entry{min-height:40px;padding:8px 11px}}
+
+
+/* Scientific Laboratory UI refresh — layout and presentation only */
+:root {
+  --bg: var(--eco-bg); --surface: var(--eco-surface);
+  --surface-alt: var(--eco-surface-muted); --ink: var(--eco-ink);
+  --muted: var(--eco-muted); --line: var(--eco-border);
+  --line-strong: var(--eco-border-strong);
+  --green: var(--eco-brand); --green-dark: var(--eco-brand-hover);
+  --teal: var(--eco-teal); --radius: var(--eco-radius-panel);
+  --shadow: var(--eco-shadow-panel);
+  font-family: var(--eco-font-sans);
+}
+body { background: var(--eco-bg); }
+.topbar { background: rgba(255,255,255,.97); backdrop-filter: none; border-bottom-color: var(--eco-border); }
+.workspace { max-width: 1660px; }
+.intro { padding-block: 14px 10px; }
+.intro h1 { letter-spacing: -.035em; }
+.stats-grid { gap: 8px; }
+.stat-card { box-shadow: none; border-color: var(--eco-border); }
+.stat-card strong, .metric-list strong, .experiment-slot strong, .chart-card, .comparison-summary {
+  font-variant-numeric: tabular-nums;
+}
+.lab-grid {
+  grid-template-columns: minmax(220px, .65fr) minmax(0, 2.1fr) minmax(220px, .68fr);
+  align-items: start;
+  gap: 12px;
+}
+.panel, .analysis-panel, .methods-panel { box-shadow: var(--eco-shadow-panel); }
+.canvas-panel { min-width: 0; }
+.canvas-shell { width: 100%; }
+.canvas-shell canvas { display: block; max-width: 100%; height: auto; }
+.controls-panel .control-group + .control-group { border-top: 1px solid var(--eco-border); padding-top: 16px; }
+.button { transition: background var(--eco-motion-fast), border-color var(--eco-motion-fast), box-shadow var(--eco-motion-fast); }
+.button:focus-visible, .tutorial-replay:focus-visible, .lab2-entry:focus-visible,
+input:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 3px solid var(--eco-focus); outline-offset: 3px;
+}
+.button-primary { background: var(--eco-brand); }
+.lab2-entry { border-radius: var(--eco-radius-control); }
+.chart-card { border-color: var(--eco-border); }
+.chart-card figcaption { border-bottom: 1px solid var(--eco-border); padding-bottom: 10px; }
+.comparison-summary { border-left: 3px solid var(--eco-brand); }
+@media (max-width: 1280px) and (min-width: 821px) {
+  .lab-grid { grid-template-columns: minmax(220px,.7fr) minmax(0,1.7fr); }
+  .model-panel { grid-column: 1 / -1; }
+}
+@media (max-width: 820px) {
+  .workspace { max-width: 680px; }
+  .lab-grid { display: flex; flex-direction: column; }
+  .canvas-panel { order: 1; width: 100%; }
+  .controls-panel { order: 2; width: 100%; }
+  .model-panel { order: 3; width: 100%; }
+  .topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+  .run-status .status-dot, .record-status .record-dot { animation: none; }
+}

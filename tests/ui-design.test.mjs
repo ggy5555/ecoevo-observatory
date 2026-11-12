@@ -25,7 +25,7 @@ const protectedBlobs={
 test("scientific computation, random streams, worker and persistence are byte-for-byte unchanged",()=>{
   for(const [path,sha] of Object.entries(protectedBlobs)){
     const bytes=Buffer.from(read(path),"utf8");
-    const actual=createHash("sha1").update("blob "+bytes.length+"\\0").update(bytes).digest("hex");
+    const actual=createHash("sha1").update("blob "+bytes.length+"\0").update(bytes).digest("hex");
     assert.equal(actual,sha,path+" differs from the pre-redesign main branch");
   }
 });

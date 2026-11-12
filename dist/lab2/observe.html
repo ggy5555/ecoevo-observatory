@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0f5d52"><meta name="description" content="LAB 2.0 생태계 관찰과 포식자 개체 분석">
-<title>Observation | EcoEvo LAB 2.0</title><link rel="stylesheet" href="./css/lab2.css"></head><body>
+<title>Observation | EcoEvo LAB 2.0</title><link rel="stylesheet" href="./css/lab2.css"><link rel="stylesheet" href="../css/design-tokens.css"><link rel="stylesheet" href="./css/lab2-refresh.css">></head><body>
 <header class="header"><a class="brand" href="./">◉ EcoEvo <b>LAB 2.0</b></a>
 <nav aria-label="연구실 메뉴"><a href="./">Overview</a><a href="./experiment.html">Experiments</a><a aria-current="page" href="./observe.html">Observation</a><a href="./drift.html">Genetic Drift</a><a href="./methods.html">Methods</a></nav><a class="back" href="../">↩ Observatory 0.2</a></header>
 <main class="wrap">
@@ -16,7 +16,7 @@
 <input type="range" id="observePredators" min="0" max="50" step="1" value="10" disabled>
 <label for="observeSeed">Random seed</label>
 <div class="inline"><input type="number" id="observeSeed" min="0" max="4294967295" step="1" value="314159"><button class="btn icon-btn" id="observeNewSeed" type="button" aria-label="새 시드 생성">↻</button></div>
-<p class="hint">설정은 <strong>Reset</strong>할 때 적용됩니다. 실행 중에는 입력을 바꿀 수 없습니다. 같은 시드와 설정은 같은 결과를 재현합니다.</p>
+<p class="hint">설정은 <strong>Reset</strong>할 때 적용됩니다. 실행 중에는 입력을 바꿀 수 없습니다. 같은 시드와 설정은 같은 결과를 재현합니다.</p><p class="applied-state" id="observeAppliedState" role="status" aria-live="polite">현재 적용 중인 설정을 확인하는 중…</p>
 <label for="observeSpeed">관찰 속도</label><select id="observeSpeed"><option value="1">1× (상세 관찰)</option><option value="5">5×</option><option value="20">20× (빠르게)</option></select>
 <div class="obs-actions"><button id="observeToggle" class="btn primary fill" type="button">▶ Start</button><button id="observeStep" class="btn fill" type="button">+1 Tick</button><button id="observeReset" class="btn fill" type="button">↻ Reset with same seed</button></div>
 <p class="errors" id="observeErrors" role="alert" aria-live="polite"></p>

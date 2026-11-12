@@ -17,9 +17,36 @@ const readPlan=()=>({experimentType:el.mode.value,
   conditions:el.conditions.value.split(",").map(x=>x.trim()).filter(x=>x!=="").map(Number),
   replicates:Number(el.replicates.value),ticks:Number(el.ticks.value),sampleInterval:Number(el.sampleInterval.value),
   baseSeed:el.baseSeed.value,hypothesis:el.hypothesis.value.trim()});
+// Presentational feedback mirrors existing validatePlan errors; validation rules remain unchanged.
+function showFieldErrors(errors){
+  const fields=[
+    ["conditions",/조건은|실험 조건|먹이 생성확률|포식자 수|중복된/],
+    ["replicates",/반복 횟수/],
+    ["ticks",/관찰 기간|simulated ticks/],
+    ["sampleInterval",/기록 간격/],
+    ["baseSeed",/시드|seed/i],
+    ["hypothesis",/가설/]
+  ];
+  for(const [id,pattern] of fields){
+    const input=$(id);if(!input)continue;
+    const error=errors.find(message=>pattern.test(message))||"";
+    let detail=$(id+"FieldError");
+    if(!detail){
+      detail=document.createElement("span");
+      detail.id=id+"FieldError";detail.className="field-error";detail.setAttribute("aria-live","polite");
+      const anchor=id==="baseSeed"?input.closest(".inline"):input;
+      anchor.insertAdjacentElement("afterend",detail);
+    }
+    detail.textContent=error;detail.hidden=!error;
+    if(error){input.setAttribute("aria-invalid","true");input.setAttribute("aria-describedby",detail.id);}
+    else{input.removeAttribute("aria-invalid");input.removeAttribute("aria-describedby");}
+  }
+}
+
 function renderPreview() {
   const check=validatePlan(readPlan()),plan=check.plan;
   el.errors.textContent=check.errors.join("\n");
+  showFieldErrors(check.errors);
   el.start.disabled=running||!check.valid;
   el.estimate.textContent=Number.isFinite(check.work)?nf(check.work,0)+" ticks":"설정 확인";
   el.runCount.textContent=Number.isFinite(plan.replicates)?nf(plan.conditions.length*plan.replicates,0)+" runs":"설정 확인";

@@ -44,6 +44,23 @@ try{
   await page.locator("#stepButton").click();
   const next=Number((await page.locator("#statTick").innerText()).replaceAll(",",""));
   assert.equal(next,tick+1,"Legacy single tick should advance exactly one simulation tick");
+  await page.locator("#recordButton").click();
+  await page.locator("#stepButton").click();
+  await page.locator("#recordButton").click();
+  await page.locator("#saveRunA").click();
+  assert.equal(await page.locator("#slotACard").getAttribute("data-state"),"filled");
+  await page.locator("#foodSpawnRate").evaluate(input=>{
+    input.value="0.35";input.dispatchEvent(new Event("input",{bubbles:true}));
+  });
+  await page.locator("#recordButton").click();
+  await page.locator("#stepButton").click();
+  await page.locator("#recordButton").click();
+  await page.locator("#saveRunB").click();
+  assert.equal(await page.locator("#slotBCard").getAttribute("data-state"),"filled");
+  const legacyCsv=page.waitForEvent("download");
+  await page.locator("#downloadCsv").click();
+  assert.match((await legacyCsv).suggestedFilename(),/ecoevo-experiments-.*\.csv$/);
+  console.log("Legacy A/B recording + CSV OK");
   console.log("Legacy play/pause/step:",tick,next);
   await page.goto(BASE+"/lab2/",{waitUntil:"networkidle"});
   await page.locator('a[href="./experiment.html?mode=predation"]').waitFor();
@@ -74,9 +91,17 @@ try{
   const dl=page.waitForEvent("download");
   await page.locator("#downloadSummary").click();
   assert.match((await dl).suggestedFilename(),/summary\.csv$/);
+  for(const [button,filename] of [["#downloadSeries",/timeseries\.csv$/],["#downloadJson",/experiment_metadata\.json$/]]){
+    const event=page.waitForEvent("download");await page.locator(button).click();
+    assert.match((await event).suggestedFilename(),filename);
+  }
+  await page.locator("#populationChart").hover({position:{x:110,y:80}});
+  assert.equal(await page.locator(".chart-data-tooltip").first().isVisible(),true,"Hover should show a data tooltip");
   await page.locator("#saveHistory").click();
-  await page.locator("#historySelect option").last().waitFor({state:"attached"});
-  console.log("LAB Worker + Results + CSV + save action OK");
+  await page.waitForFunction(()=>document.querySelector("#historySelect").options.length>=1 && !document.querySelector("#loadHistory").disabled);
+  await page.locator("#loadHistory").click();
+  assert.match(await page.locator("#historyStatus").innerText(),/실험 결과를 열었습니다/);
+  console.log("LAB Worker + Results + chart tooltip + CSV/JSON + IndexedDB save/load OK");
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
   mobile.on("pageerror",e=>runtimeErrors.push("mobile: "+e.message));
   await mobile.goto(BASE+"/lab2/observe.html",{waitUntil:"networkidle"});
@@ -89,7 +114,16 @@ try{
   const skipMobile=mobile.locator("#tutorialSkip");if(await skipMobile.isVisible())await skipMobile.click();
   await checkLayout(mobile,"Legacy mobile");
   await screenshot(mobile,"observatory-mobile");
-  console.log("Mobile viewport 390px both apps no horizontal overflow");
+  for(const width of [320,768]){
+    await mobile.setViewportSize({width,height:844});
+    await mobile.goto(BASE+"/lab2/observe.html",{waitUntil:"networkidle"});
+    await checkLayout(mobile,"LAB Observation "+width+"px");
+    await mobile.goto(BASE+"/",{waitUntil:"networkidle"});
+    await mobile.waitForTimeout(650);
+    const skipExtra=mobile.locator("#tutorialSkip");if(await skipExtra.isVisible())await skipExtra.click();
+    await checkLayout(mobile,"Legacy "+width+"px");
+  }
+  console.log("Mobile/tablet viewport widths 320, 390, 768px: no horizontal overflow");
   assert.deepEqual(runtimeErrors,[],"Browser page errors");
   console.log("PASS: complete interactive UI browser smoke");
 }catch(error){

@@ -1,5 +1,38 @@
 # EcoEvo Observatory
 
+## 프로젝트 기본 정보
+
+**프로젝트명**  
+EcoEvo Observatory
+
+**부제**  
+Interactive Evolutionary Ecology Virtual Laboratory
+
+**한 줄 설명**  
+환경 조건을 직접 조절하고, 가상 생물 집단의 진화를 반복 실험하여 자연선택과 진화생태학적 변화를 분석하는 웹 기반 가상 실험실
+
+**Target User**  
+자연선택과 진화 개념을 직접 실험하며 이해하고 싶은 중·고등학생 및 생명과학 학습자
+
+**Problem**  
+교과서에서는 자연선택과 유전적 부동의 결과가 이미 정리된 형태로 제시되는 경우가 많아, 학생이 직접 환경 조건을 조작하고 여러 번 반복 실험하면서 개체군 수준의 변화를 관찰하기 어렵다.
+
+따라서 사용자가 직접 독립변인을 변경하고 동일한 조건에서 시뮬레이션을 반복하여 결과를 비교할 수 있는 가상 진화생태학 실험 환경을 제공하고자 한다.
+
+**Core Feature**  
+환경 조건을 조절하면 개체들의 생존·에너지 획득·번식 성공이 실제 시뮬레이션되어 집단의 유전형질 분포가 변화하고, 그 결과를 그래프로 비교할 수 있는 진화 실험 엔진
+
+**현재 GitHub Repository**  
+https://github.com/ggy5555/ecoevo-observatory
+
+**현재 배포 URL**  
+https://ggy5555.github.io/ecoevo-observatory/
+
+**LAB 2.0 배포 URL**  
+https://ggy5555.github.io/ecoevo-observatory/lab2/
+
+> 초기 기획안에는 ‘미배포’ 및 ‘MVP 완성 후 GitHub Pages 또는 Vercel 배포’로 기재되어 있었으나, 현재는 GitHub Pages에 배포되어 있습니다. LAB 2.0의 기능별 구현 상태는 아래 설명을 참조하세요.
+
 환경 조건을 조절하고 가상 생물 집단의 생존·번식·사망을 관찰하는 웹 기반 진화생태학 Virtual Lab입니다.
 
 현재 버전은 개발 명세의 **MVP 0.2** 범위를 구현합니다. 결과를 직접 증가·감소시키는 코드는 없으며, `유전형질 → 표현형 → 행동 → 에너지 손익 → 번식 성공`의 과정에서 집단 변화가 나타납니다.

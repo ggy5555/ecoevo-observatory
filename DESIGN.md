@@ -1,6 +1,6 @@
 # EcoEvo Observatory — Scientific Laboratory Design System
 
-> Version 1.0 · proposed UI on `feature/scientific-ui-redesign` · 2026-11-12
+> Version 1.0 · implemented on `feature/scientific-ui-redesign` · 2026-11-12
 >
 > **Scope:** presentation and usability only. Legacy Observatory MVP 0.2 and LAB 2.0 P1 (model `lab2-ecology-2.1.0`) remain **independent products with independent engines**.
 
@@ -86,3 +86,18 @@ UI-only modifications are allowed in HTML, CSS, display handlers in `main.js` an
 - https://dribbble.com/shots/26946516-Protera-BioTech-Data-Visualization-Dashboard — data hierarchy
 - https://noonnu.cc/ — font licensing reference
 - https://recent.design/ — visual reference only
+
+## Implementation and verification record (2026-11-12)
+
+- **Phases implemented in order:** (1) shared tokens, (2) Legacy Observatory, (3) LAB Overview/Builder/Observation/Methods, (4) Results and presentation-only chart renderer changes, (5) responsive/accessibility feedback and regression checks.
+- **GitHub branch:** [feature/scientific-ui-redesign](https://github.com/ggy5555/ecoevo-observatory/tree/feature/scientific-ui-redesign). `main` was not modified or deployed.
+- **Scientific source integrity:** `tests/ui-design.test.mjs` asserts the original Git blob SHA for **15 protected files** (both engine models, RNG, experiment calculators, Worker, IndexedDB storage). The comparison is anchored to main commit `5dbbe03bda84441f8cb681a348a90ad7ce240e8e`.
+- **Automated tests:** `npm test` passed in [Verify Legacy + LAB 2.0](https://github.com/ggy5555/ecoevo-observatory/actions/runs/43184022356), including seeded reproducibility, default input and algorithm tests, Worker progress/cancellation and export tests.
+- **Real-browser UI smoke:** [Chromium/Playwright success](https://github.com/ggy5555/ecoevo-observatory/actions/runs/43184021004) covered Legacy start/pause/single tick/A-B recording/CSV; LAB Observation start/pause/single tick and applied/reset status; Builder Worker experiment; Results CSV/JSON and tooltip; IndexedDB save and restore; viewport widths 320, 390, 768, and 1440px with no horizontal page overflow in the tested views.
+- **Screenshot artifact:** [ecoevo-ui-screenshots](https://github.com/ggy5555/ecoevo-observatory/actions/runs/43184021004/artifacts/13927327596). These are after-redesign captures, not fabricated before/after screenshots.
+- **Browser-test dependency:** Playwright and Chromium are installed only in CI, not bundled with the production site.
+- **Review limitations:** Desktop/mobile browser smoke does not constitute comprehensive WCAG color-contrast auditing, real tablet/S-Pen testing, or human visual acceptance. Inspect screenshots and the draft PR before merging.
+
+## Non-goals verified
+
+No modification to `dist/js/simulation.js`, original agent/genetics/statistics, LAB 2.0 core ecology and RNG, worker experiment runner and validators, aggregate/export algorithms, or IndexedDB persistence. No seed, timestep, population, energy, reproduction, mutation or predator parameters were changed. The two programs continue to produce separate scientific models.

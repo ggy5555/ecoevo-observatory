@@ -1648,3 +1648,17 @@ input:focus-visible, select:focus-visible, a:focus-visible {
   .button { transition: none; }
   .run-status .status-dot, .record-status .record-dot { animation: none; }
 }
+
+
+.analysis-sequence {
+  border-left: 3px solid var(--eco-brand);
+  background: var(--eco-surface-muted);
+  color: var(--eco-muted);
+  padding: 9px 12px;
+  margin-top: 12px;
+  font-size: .8rem;
+  line-height: 1.6;
+}
+@media (max-width: 820px) {
+  .analysis-sequence { margin-top: 8px; }
+}

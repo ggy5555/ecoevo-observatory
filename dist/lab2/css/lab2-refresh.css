@@ -118,3 +118,28 @@ body{background:var(--eco-bg);color:var(--eco-ink);font-family:var(--eco-font-ui
 @media(prefers-reduced-motion:reduce){
   .btn,.header nav a{transition:none!important}
 }
+
+/* Results: clear hierarchy, readable scientific data and responsive legends. */
+.result-section>.between{align-items:flex-start;padding-bottom:15px;border-bottom:1px solid var(--eco-border)}
+.result-jumps{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.result-jumps a{display:inline-flex;align-items:center;min-height:38px;padding:7px 12px;text-decoration:none;color:var(--eco-brand);background:#eff7f4;border:1px solid var(--eco-border);border-radius:6px;font-size:.76rem;font-weight:720}
+.result-jumps a:hover{border-color:var(--eco-brand);text-decoration:underline}
+.result-section .kpis{margin:18px 0 16px;gap:9px}
+.result-section .kpi{border-color:var(--eco-border);border-radius:8px;padding:15px 17px}
+.result-section .kpi strong{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.result-section .chart-grid{gap:11px}
+.result-section .chart-grid figure{position:relative;padding:15px;overflow:visible}
+.result-section .chart-grid canvas{height:260px;margin-top:11px;max-width:100%}
+.chart-data-tooltip{position:absolute;z-index:3;pointer-events:none;min-width:160px;max-width:min(300px,95%);padding:9px 11px;background:#172d28;color:#fff;border-radius:6px;border:1px solid #4a766a;box-shadow:0 6px 20px #172d2826;font-size:.7rem;line-height:1.65;white-space:pre-line;font-variant-numeric:tabular-nums}
+.chart-data-tooltip[hidden]{display:none!important}
+.result-section .data-panel{border-radius:8px;margin-top:14px}
+.result-section .data-panel h3{font-size:.98rem}
+.result-section .scroll{border:1px solid var(--eco-border);border-radius:6px;max-width:100%}
+.result-section table{font-variant-numeric:tabular-nums}
+.result-section th{color:#2c5449;background:#f2f7f4;position:sticky;top:0;z-index:1;font-size:.73rem}
+.result-section td{color:var(--eco-ink);background:#fff}
+.result-section tbody tr:nth-child(even) td{background:#f9fbfa}
+.result-section tbody tr:hover td{background:#ecf6f2}
+.result-section [id="summaryTable"] :is(td,th),.result-section [id="pairedTable"] :is(td,th),.result-section [id="runsTable"] :is(td,th){font-variant-numeric:tabular-nums}
+#resultCharts,#conditionSummary,#pairedSummary,#runDetails{scroll-margin-top:90px}
+@media(max-width:760px){.result-section .chart-grid figure{padding:10px}.result-section .chart-grid canvas{height:240px}.result-jumps{gap:5px}.result-jumps a{min-height:42px}}

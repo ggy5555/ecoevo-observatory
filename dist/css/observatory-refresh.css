@@ -101,3 +101,21 @@ body{background:var(--eco-bg);color:var(--eco-ink);font-family:var(--eco-font-ui
 @media(prefers-reduced-motion:reduce){
   .button,.canvas-overlay button{transition:none!important}
 }
+
+/* Phase 5: series legend and narrow viewport polish. */
+.key-a{background:var(--eco-series-a)}
+.key-b{background:var(--eco-series-b)}
+.key-live{background:var(--eco-series-live)}
+#experimentAnalysis .chart-card{scroll-margin-top:84px}
+@media(max-width:640px){
+  .analysis-heading{display:block}
+  .chart-key{justify-content:flex-start;gap:11px;margin-top:12px}
+  .chart-grid{grid-template-columns:1fr}
+  .chart-card-wide{grid-column:auto}
+  .recorder-panel{display:flex;flex-direction:column}
+  .canvas-meta{flex-wrap:wrap}
+}
+@media(max-width:380px){
+  .topbar-actions .run-status{font-size:.7rem}
+  .section-jumps{gap:9px}
+}

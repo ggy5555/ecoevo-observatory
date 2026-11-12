@@ -401,9 +401,9 @@ function render() {
 }
 
 const chartStyles = {
-  A: { color: "#2b6ff3", width: 2.4 },
-  B: { color: "#de762c", width: 2.4 },
-  current: { color: "#75837f", width: 1.8, dash: [6, 5] },
+  A: { color: "#315fbc", width: 2.4 },
+  B: { color: "#b45e23", width: 2.4 },
+  current: { color: "#64748b", width: 1.8, dash: [6, 5] },
 };
 
 function resizeChartCanvas(canvas) {

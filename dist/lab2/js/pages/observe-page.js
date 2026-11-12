@@ -171,5 +171,6 @@ $("observeNewSeed").addEventListener("click",()=>{
 });
 for(const id of ["observeFood","observePredators","observeSeed"])$(id).addEventListener("input",updateAppliedState);
 $("observeMode").addEventListener("change",updateAppliedState);
+$("observeNewSeed").addEventListener("click",updateAppliedState);
 window.addEventListener("resize",()=>{if(world){render();drawCharts();}});
 reset();requestAnimationFrame(frame);

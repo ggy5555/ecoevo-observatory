@@ -139,10 +139,10 @@ export function renderGeneHistogram(canvas,groups){
   const final=first.runs.flatMap(r=>r.finalGenes);
   const bins=xs=>Array.from({length:10},(_,i)=>xs.filter(v=>Math.min(9,Math.floor(v*10))===i).length);
   const a0=bins(initial).map(n=>n/Math.max(1,initial.length)),a1=bins(final).map(n=>n/Math.max(1,final.length)),max=Math.max(0.05,...a0,...a1)*1.12;
-  const a=axes(ctx,w,h,10,max,"speedGene 범위 0~1",2,w<500?58:38);
+  const a=axes(ctx,w,h,10,max,"speedGene 범위 0~1",2,w<440?77:w<500?58:38);
   const base=a.y(0);
   for(let i=0;i<10;i++){
-    const l=a.x(i+.18),barW=Math.min(19,a.plotW/25);
+    const l=a.x(i+.04),barW=Math.min(19,a.plotW/10*.38);
     ctx.fillStyle="#2b6ff3a8";ctx.fillRect(l,a.y(a0[i]),barW,base-a.y(a0[i]));
     ctx.fillStyle="#de762ca8";ctx.fillRect(l+barW+2,a.y(a1[i]),barW,base-a.y(a1[i]));
   }
@@ -150,6 +150,6 @@ export function renderGeneHistogram(canvas,groups){
   ctx.fillStyle="#315fbc";ctx.fillText("■ 초기",14,12);
   ctx.fillStyle="#b45e23";ctx.fillText("■ 종료(생존 집단)",w<500?14:112,w<500?30:12);
   ctx.fillStyle="#263d36";
-  ctx.fillText((first.experimentType==="predation"?"Predators ":"Food p ")+first.label+" · 상대빈도",w<500?150:274,w<500?30:12);
+  ctx.fillText((first.experimentType==="predation"?"Predators ":"Food p ")+first.label+" · 상대빈도",w<440?14:w<500?150:274,w<440?48:w<500?30:12);
 }
 export function numericText(v,digits=2){return v===null?"N/A":fmt(Number(v).toFixed(digits));}

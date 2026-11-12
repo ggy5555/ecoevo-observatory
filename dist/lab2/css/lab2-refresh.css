@@ -143,3 +143,14 @@ body{background:var(--eco-bg);color:var(--eco-ink);font-family:var(--eco-font-ui
 .result-section [id="summaryTable"] :is(td,th),.result-section [id="pairedTable"] :is(td,th),.result-section [id="runsTable"] :is(td,th){font-variant-numeric:tabular-nums}
 #resultCharts,#conditionSummary,#pairedSummary,#runDetails{scroll-margin-top:90px}
 @media(max-width:760px){.result-section .chart-grid figure{padding:10px}.result-section .chart-grid canvas{height:240px}.result-jumps{gap:5px}.result-jumps a{min-height:42px}}
+
+.form-panel :is(input,select,textarea)[aria-invalid="true"]{border-color:var(--eco-error);background:#fffafa}
+.field-error{display:block;margin:6px 0 8px;font-size:.76rem;line-height:1.5;color:var(--eco-error)}
+.field-error[hidden]{display:none!important}
+@media(max-width:520px){
+  .result-section>.between .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:7px}
+  .result-section>.between .btn{padding:10px 7px;font-size:.74rem}
+  .chart-data-tooltip{font-size:.67rem}
+  .chart-grid figcaption strong{line-height:1.5}
+  .methods-jumps a{min-height:38px;display:inline-flex;align-items:center}
+}

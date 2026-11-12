@@ -98,3 +98,28 @@ table, .conditions-preview, .seed-list, #progressValue { font-variant-numeric: t
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
 }
+
+
+/* Workflow clarity and scientific status callouts */
+.workflow-hint, .analysis-sequence {
+  color: var(--eco-muted);
+  border-left: 3px solid var(--eco-brand);
+  padding: 9px 12px;
+  background: var(--eco-surface-muted);
+  line-height: 1.6;
+  font-size: .81rem;
+}
+.workflow-hint { margin: 0 0 16px; }
+#observeApplyStatus {
+  padding: 9px 12px;
+  border: 1px solid var(--eco-border);
+  border-radius: var(--eco-radius-control);
+  background: var(--eco-surface-muted);
+  color: var(--eco-ink);
+}
+.methods-limits { border-left: 3px solid var(--eco-warning); }
+@media (max-width: 768px) {
+  .actions > .btn { max-width: 100%; }
+  .result-section .actions { gap: 8px; }
+  .result-section .actions .btn { flex: 1 1 170px; }
+}

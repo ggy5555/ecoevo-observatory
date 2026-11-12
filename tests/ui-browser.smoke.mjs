@@ -100,6 +100,7 @@ try{
   await page.locator("#saveHistory").click();
   await page.waitForFunction(()=>document.querySelector("#historySelect").options.length>=1 && !document.querySelector("#loadHistory").disabled);
   await page.locator("#loadHistory").click();
+  await page.waitForFunction(()=>document.querySelector("#historyStatus")?.textContent.includes("실험 결과를 열었습니다"),null,{timeout:10000});
   assert.match(await page.locator("#historyStatus").innerText(),/실험 결과를 열었습니다/);
   console.log("LAB Worker + Results + chart tooltip + CSV/JSON + IndexedDB save/load OK");
   const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});

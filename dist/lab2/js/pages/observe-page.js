@@ -14,6 +14,19 @@ function readSettings(){
 }
 function format(n,d=3){return n===null||n===undefined?"N/A":Number(n).toLocaleString("ko-KR",{maximumFractionDigits:d});}
 function pause(){playing=false;updateControls();}
+function updateAppliedState(){
+  const node=$("observeAppliedState");
+  if(!node||!world)return;
+  const config=world.config;
+  const draftPredators=$("observeMode").value==="predation"?Number($("observePredators").value):0;
+  const pending=Number($("observeFood").value)!==config.foodSpawnProbability
+    ||draftPredators!==config.predatorCount
+    ||Number($("observeSeed").value)!==world.seed;
+  node.dataset.state=pending?"draft":"active";
+  node.textContent=pending
+    ?"변경된 조건이 아직 적용되지 않았습니다. Reset을 누르면 새 조건으로 세계가 초기화됩니다."
+    :"적용 중 · Food "+Number(config.foodSpawnProbability).toFixed(2)+"/tick · Predators "+config.predatorCount+" · Seed "+world.seed;
+}
 function updateControls(){
   $("observeToggle").textContent=playing?"Ⅱ Pause":"▶ Start";
   $("observeStep").disabled=playing;
@@ -21,6 +34,7 @@ function updateControls(){
     $(id).disabled=playing||(id==="observePredators"&&$("observeMode").value!=="predation");
   }
   $("observeStatus").textContent=world?.prey.length===0?"멸종 · 개체군 0":playing?"실행 중":"일시정지 / 준비";
+  updateAppliedState();
 }
 function record(){
   if(world.tick%10!==0 && world.tick!==0)return;
@@ -155,5 +169,7 @@ $("observeNewSeed").addEventListener("click",()=>{
   const a=new Uint32Array(1);if(globalThis.crypto?.getRandomValues)crypto.getRandomValues(a);else a[0]=Math.floor(Math.random()*4294967296);
   $("observeSeed").value=String(a[0]);$("observeErrors").textContent="새 시드를 적용하려면 Reset을 누르세요.";
 });
+for(const id of ["observeFood","observePredators","observeSeed"])$(id).addEventListener("input",updateAppliedState);
+$("observeMode").addEventListener("change",updateAppliedState);
 window.addEventListener("resize",()=>{if(world){render();drawCharts();}});
 reset();requestAnimationFrame(frame);

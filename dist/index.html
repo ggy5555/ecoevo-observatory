@@ -9,7 +9,8 @@
     />
     <meta name="theme-color" content="#0f5d52" />
     <title>EcoEvo Observatory</title>
-    <link rel="stylesheet" href="./css/style.css"> <link rel="stylesheet" href="./css/design-tokens.css" /> />
+    <link rel="stylesheet" href="./css/style.css"> <link rel="stylesheet" href="./css/design-tokens.css" />
+    <link rel="stylesheet" href="./css/observatory-refresh.css" /> />
   </head>
   <body>
     <header class="topbar">
@@ -51,6 +52,12 @@
           <span><i class="legend-trail"></i>이동 방향</span>
         </div>
       </section>
+
+      <nav class="section-jumps" aria-label="연구 화면 바로가기">
+        <a href="#ecosystemTitle">Live Ecosystem</a>
+        <a href="#analysisTitle">A/B Analysis</a>
+        <a href="#methodsTitle">Model & Methods</a>
+      </nav>
 
       <section class="stats-grid" aria-label="실시간 통계">
         <article class="stat-card primary-stat">
@@ -115,6 +122,7 @@
               한 tick마다 새 먹이가 생성될 확률입니다. 다른 조건은 고정한 채 이 값만
               바꾸어 비교하세요.
             </p>
+            <p class="applied-caption" role="note">설정 변경은 실행 중에도 즉시 적용됩니다. 이 값은 다음 tick부터 반영됩니다.</p>
           </div>
 
           <div class="control-group compact">

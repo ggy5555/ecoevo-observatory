@@ -10,8 +10,8 @@ function canvasSetup(canvas){
   ctx.fillStyle="#fff";ctx.fillRect(0,0,cssWidth,cssHeight);
   return {ctx,width:cssWidth,height:cssHeight};
 }
-function axes(ctx,w,h,maxX,maxY,units,decimals=0){
-  const l=52,r=18,t=20,b=39,plotW=w-l-r,plotH=h-t-b;
+function axes(ctx,w,h,maxX,maxY,units,decimals=0,top=20){
+  const l=52,r=18,t=top,b=39,plotW=w-l-r,plotH=h-t-b;
   const x=v=>l+v/Math.max(1,maxX)*plotW;
   const y=v=>t+plotH-(v/Math.max(0.000001,maxY))*plotH;
   ctx.font="11px system-ui,sans-serif";ctx.fillStyle="#64736f";ctx.textBaseline="middle";
@@ -32,7 +32,7 @@ export function renderLineChart(canvas,groups,key,{maxY=null,yLabel="ticks",band
   if(!points.length){ctx.fillStyle="#64736f";ctx.textAlign="center";ctx.fillText("분석 가능한 데이터 없음",w/2,h/2);return;}
   const maxX=Math.max(1,...points.map(p=>p.tick));
   const valMax=maxY??Math.max(1,...points.map(p=>p[key]),...(band?points.map(p=>p.popHigh??0):[]))*1.1;
-  const a=axes(ctx,w,h,maxX,valMax,yLabel,key==="geneMean"?2:0);
+  const a=axes(ctx,w,h,maxX,valMax,yLabel,key==="geneMean"?2:0,52);
   groups.forEach((g,i)=>{
     const color=COLORS[i%COLORS.length];
     if(band&&g.completeRuns>=2){
@@ -52,9 +52,15 @@ export function renderLineChart(canvas,groups,key,{maxY=null,yLabel="ticks",band
     }
     ctx.strokeStyle=color;ctx.lineWidth=2.3;ctx.stroke();
   });
-  ctx.textAlign="left";ctx.font="11px system-ui,sans-serif";
-  groups.forEach((g,i)=>{ctx.fillStyle=COLORS[i%COLORS.length];ctx.fillRect(58+i*124,6,14,4);
-    ctx.fillStyle="#33423e";ctx.fillText((g.experimentType==="predation"?"predators=":"p=")+g.label,78+i*124,10);});
+  // A two-column text legend remains readable on narrow displays.
+  ctx.textAlign="left";ctx.textBaseline="middle";ctx.font="11px system-ui,sans-serif";
+  const colWidth=Math.max(120,(w-68)/2);
+  groups.forEach((g,i)=>{
+    const x=52+(i%2)*colWidth, y=12+Math.floor(i/2)*18;
+    const label=(g.experimentType==="predation"?"Predators ":"Food p ")+g.label;
+    ctx.fillStyle=COLORS[i%COLORS.length];ctx.fillRect(x,y-2,13,4);
+    ctx.fillStyle="#33423e";ctx.fillText(label,x+19,y,Math.max(75,colWidth-24));
+  });
 }
 export function renderFinalPopulation(canvas,groups){
   const {ctx,width:w,height:h}=canvasSetup(canvas);
@@ -74,7 +80,7 @@ export function renderFinalPopulation(canvas,groups){
       ctx.beginPath();ctx.arc(center+((j%7)-3)*2.2,a.y(v),2.4,0,Math.PI*2);
       ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();
     });
-    ctx.font="11px system-ui";ctx.fillStyle="#263d36";ctx.textAlign="center";ctx.fillText("p="+g.label,center,h-32);
+    ctx.font="11px system-ui";ctx.fillStyle="#263d36";ctx.textAlign="center";ctx.fillText((g.experimentType==="predation"?"Predators ":"Food p ")+g.label,center,h-32,Math.max(60,a.plotW/groups.length-8));
   });
 }
 export function renderGeneHistogram(canvas,groups){
